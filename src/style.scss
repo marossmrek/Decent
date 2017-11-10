@@ -1,0 +1,57 @@
+/*Material ui note - CSS properties defined inline are given priority over those defined in a CSS class.
+You need to use !important to take precedence over the inline style*/
+
+$primary-color: #00BCD4;
+$secondary-color: #000000;
+$error-color: #F44336;
+
+.form-container {
+  text-align: center !important;
+  padding: 30px !important;
+  width: 50% !important;
+  position: absolute !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  left: 25% !important;
+
+  & > * {
+    margin-bottom: 15px;
+  }
+
+  & > div:last-child {
+    margin-bottom: 0px !important;
+  }
+
+  .form-type {
+    text-align: left;
+  }
+
+  .dropzone {
+    border: 1px dashed $secondary-color;
+    color: $secondary-color;
+    text-align: center;
+    cursor: pointer;
+    padding: 20px;
+
+    &:hover {
+      border: 1px dashed $primary-color;
+    }
+  }
+
+  .error {
+    margin-top: 5px;
+    text-align: left;
+    font-size: 12px;
+    line-height: 12px;
+    color: $error-color;
+    transition: all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms
+  }
+
+  @media screen and (max-width: 760px) {
+    & {
+      width: 80% !important;
+      left: 10% !important;
+    }
+  }
+}
+

@@ -129,7 +129,6 @@ class App extends React.Component {
                         <div className="error">{formErrors.accepted}</div>
                     </div>
                     <div>
-                        {console.log(this.state.formData.files)}
                         <Dropzone multiple={true} onDrop={this.onDrop.bind(this)} accept="image/png" className="dropzone">
                             {({ acceptedFiles, rejectedFiles }) => {
                                 return acceptedFiles.length || rejectedFiles.length
