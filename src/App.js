@@ -9,6 +9,8 @@ import MenuItem from 'material-ui/MenuItem';
 import Checkbox from 'material-ui/Checkbox';
 import RaisedButton from 'material-ui/RaisedButton';
 
+import Form from './Service/form-service';
+
 class App extends React.Component {
 
     constructor(props) {
@@ -54,14 +56,16 @@ class App extends React.Component {
         this.simpleValidate();
     }
 
+    sendForm(isValid) {
+        isValid && this.sendFormData();
+    }
+
+    async sendFormData() {
+        Form.submit(this.state.formData);
+    }
+
     simpleValidate() {
-        const formErrors = {
-            name: "",
-            email: "",
-            numeberOfKids: "",
-            accepted: "",
-            files: ""
-        };
+        const formErrors = {};
 
         const formData = this.state.formData;
         const reqExEmail = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -76,11 +80,14 @@ class App extends React.Component {
 
         formErrors.files = formData.files.length === 0 && "Image is required";
 
+        let validForm = formErrors.name  || formErrors.email  || formErrors.numeberOfKids ||
+                        formErrors.accepted  || formErrors.files  ? false : true;
+
         this.setState({
             formErrors: {
                 ...formErrors
             }
-        });
+        },this.sendForm(validForm));
     };
 
     render() {
