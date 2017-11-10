@@ -61,7 +61,14 @@ class App extends React.Component {
     }
 
     async sendFormData() {
-        Form.submit(this.state.formData);
+        var result = await Form.submit(this.state.formData);
+        if(result.status === 200 && result.data){
+            this.setState({
+                formErrors: {
+                    ...result.data
+                }
+            });
+        }
     }
 
     simpleValidate() {
@@ -115,7 +122,7 @@ class App extends React.Component {
                         fullWidth={true}
                         value={formData.numberOfKids}
                         hintText="Number of kids"
-                        errorText={formErrors.numeberOfKids}
+                        errorText={formErrors.numberOfKids}
                         errorStyle={{textAlign:"left"}}
                         selectedMenuItemStyle={{color:"#00BCD4"}}
                         className="form-type"
