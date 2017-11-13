@@ -83,6 +83,7 @@ class App extends React.Component {
         const formErrors = {};
 
         const formData = this.state.formData;
+        console.log(formData.files);
         const reqExEmail = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
         formErrors.name = formData.name.trim().length < 5 && "Name needs to be at least 5 characters long";
@@ -162,17 +163,20 @@ class App extends React.Component {
                         <div className="error">{formErrors.files}</div>
                     </div>
                     <div>
-                        <GoogleLogin
-                            clientId="333261271673-dpbki5e39148gtpaqisni0sv8qttejrt.apps.googleusercontent.com"
-                            buttonText="Sign in"
-                            className="sign-in-button"
-                            disabled={this.state.isLogin}
-                            onSuccess={() => this.setState({
-                                isLogin: true
-                            })}
-                        />
-                        <RaisedButton disabled={!this.state.isLogin} label="Submit" backgroundColor="#00BCD4"
-                                      onClick={this.handleSubmit.bind(this)}/>
+                        {!this.state.isLogin ?
+                            <GoogleLogin
+                                clientId="333261271673-dpbki5e39148gtpaqisni0sv8qttejrt.apps.googleusercontent.com"
+                                buttonText="Login with Google"
+                                className="loginBtn loginBtn-google"
+                                onSuccess={() => this.setState({
+                                    isLogin: true
+                                })}
+                            />
+                          :
+                            <RaisedButton label="Submit" primary={true}
+                                          onClick={this.handleSubmit.bind(this)}/>
+                        }
+
                     </div>
                 </Paper>
             </MuiThemeProvider>
