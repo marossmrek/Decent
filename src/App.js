@@ -11,6 +11,8 @@ import RaisedButton from 'material-ui/RaisedButton';
 
 import Form from './Service/form-service';
 
+import GoogleLogin from 'react-google-login';
+
 class App extends React.Component {
 
     constructor(props) {
@@ -23,7 +25,8 @@ class App extends React.Component {
                 accepted: false,
                 files: []
             },
-            formErrors: {}
+            formErrors: {},
+            isLogin: false
         }
     }
 
@@ -62,12 +65,17 @@ class App extends React.Component {
 
     async sendFormData() {
         var result = await Form.submit(this.state.formData);
-        if(result.status === 200 && result.data){
-            this.setState({
-                formErrors: {
-                    ...result.data
-                }
-            });
+        if (result) {
+            console.log(result);
+            if (result.status === 200 && result.data) {
+                this.setState({
+                    formErrors: {
+                        ...result.data
+                    }
+                });
+            } else if (result.status === 204) {
+                console.log("Success");
+            }
         }
     }
 
@@ -81,20 +89,20 @@ class App extends React.Component {
 
         formErrors.email = !reqExEmail.test(formData.email) && "Not valid email";
 
-        formErrors.numeberOfKids = formData.numberOfKids === null && "Number of kids is required";
+        formErrors.numberOfKids = formData.numberOfKids === null && "Number of kids is required";
 
         formErrors.accepted = !formData.accepted && "Must be accepted";
 
         formErrors.files = formData.files.length === 0 && "Image is required";
 
-        let validForm = formErrors.name  || formErrors.email  || formErrors.numeberOfKids ||
-                        formErrors.accepted  || formErrors.files  ? false : true;
+        let validForm = formErrors.name || formErrors.email || formErrors.numeberOfKids ||
+        formErrors.accepted || formErrors.files ? false : true;
 
         this.setState({
             formErrors: {
                 ...formErrors
             }
-        },this.sendForm(validForm));
+        }, this.sendForm(validForm));
     };
 
     render() {
@@ -108,14 +116,14 @@ class App extends React.Component {
                                value={formData.name}
                                hintText="Name"
                                errorText={formErrors.name}
-                               errorStyle={{textAlign:"left"}}/>
+                               errorStyle={{textAlign: "left"}}/>
                     <TextField onChange={this.handleTextChange.bind(this)}
                                name="email"
                                fullWidth={true}
                                value={formData.email}
                                hintText="Email"
                                errorText={formErrors.email}
-                               errorStyle={{textAlign:"left"}}/>
+                               errorStyle={{textAlign: "left"}}/>
                     <SelectField
                         onChange={this.handleSelectChange.bind(this)}
                         name="numberOfKids"
@@ -123,8 +131,8 @@ class App extends React.Component {
                         value={formData.numberOfKids}
                         hintText="Number of kids"
                         errorText={formErrors.numberOfKids}
-                        errorStyle={{textAlign:"left"}}
-                        selectedMenuItemStyle={{color:"#00BCD4"}}
+                        errorStyle={{textAlign: "left"}}
+                        selectedMenuItemStyle={{color: "#00BCD4"}}
                         className="form-type"
                     >
                         <MenuItem key={1} value={1} primaryText="One"/>
@@ -143,8 +151,9 @@ class App extends React.Component {
                         <div className="error">{formErrors.accepted}</div>
                     </div>
                     <div>
-                        <Dropzone multiple={true} onDrop={this.onDrop.bind(this)} accept="image/png" className="dropzone">
-                            {({ acceptedFiles, rejectedFiles }) => {
+                        <Dropzone multiple={true} onDrop={this.onDrop.bind(this)} accept="image/png"
+                                  className="dropzone">
+                            {({acceptedFiles, rejectedFiles}) => {
                                 return acceptedFiles.length || rejectedFiles.length
                                     ? `Accepted ${acceptedFiles.length}, rejected ${rejectedFiles.length} files`
                                     : "Try dropping some png";
@@ -152,7 +161,19 @@ class App extends React.Component {
                         </Dropzone>
                         <div className="error">{formErrors.files}</div>
                     </div>
-                    <RaisedButton label="Submit" backgroundColor="#00BCD4" onClick={this.handleSubmit.bind(this)}/>
+                    <div>
+                        <GoogleLogin
+                            clientId="333261271673-dpbki5e39148gtpaqisni0sv8qttejrt.apps.googleusercontent.com"
+                            buttonText="Sign in"
+                            className="sign-in-button"
+                            disabled={this.state.isLogin}
+                            onSuccess={() => this.setState({
+                                isLogin: true
+                            })}
+                        />
+                        <RaisedButton disabled={!this.state.isLogin} label="Submit" backgroundColor="#00BCD4"
+                                      onClick={this.handleSubmit.bind(this)}/>
+                    </div>
                 </Paper>
             </MuiThemeProvider>
         );

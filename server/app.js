@@ -2,6 +2,7 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var expressValidator = require('express-validator');
 var cors = require('cors');
+var fs = require('fs');
 
 var app = express();
 
@@ -18,6 +19,7 @@ app.post('/save', (req, res) => {
     req.checkBody('files', 'Image is required').notEmpty();
 
     let errors = req.validationErrors();
+    let allFormData = [];
     if (errors) {
         let sendErrorMsq = {};
         errors.map((error) => {
@@ -25,8 +27,26 @@ app.post('/save', (req, res) => {
         });
         res.send(sendErrorMsq);
     } else(
-        res.status(204).end()
-    )
+        fs.exists('formData.json', (exists) => {
+            if (exists) {
+                fs.readFile('formData.json', 'utf-8', function readFileCallback(err, data) {
+                    if (err) {
+                        res.status(500).end();
+                    } else {
+                        allFormData = JSON.parse(data);
+                        allFormData.push(req.body);
+                        fs.writeFile('formData.json', JSON.stringify(allFormData), (err) => {
+                            err ? res.status(500).end() : res.status(204).end();
+                        })
+                    }
+                });
+            } else {
+                allFormData.push(req.body);
+                fs.writeFile('formData.json', JSON.stringify(allFormData), (err) => {
+                    err ? res.status(500).end() : res.status(204).end();
+                })
+            }
+        }))
 });
 
 app.listen(5000, () => {
