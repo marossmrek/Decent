@@ -4,7 +4,7 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import Paper from 'material-ui/Paper';
 import Snackbar from 'material-ui/Snackbar';
 
-import Form from '../service/form-service';
+import Form from '../Service/form-service';
 import MaterialUiForm from '../components/ReduxForm';
 
 import {connect} from "react-redux";
